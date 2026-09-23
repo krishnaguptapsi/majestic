@@ -10,7 +10,7 @@ This document provides 100% detailed instructions for upgrading the Majestic cod
 2. [Phase 1 — Node & Engine Upgrade](#2-phase-1--node--engine-upgrade) ✅ **COMPLETED**
 3. [Phase 2 — Build Tooling Upgrade](#3-phase-2--build-tooling-upgrade) ✅ **COMPLETED**
 4. [Phase 3 — TypeScript Upgrade](#4-phase-3--typescript-upgrade) ✅ **COMPLETED**
-5. [Phase 4 — Package Manager Migration (Yarn → pnpm)](#5-phase-4--package-manager-migration-yarn--pnpm) 🔄 **IN PROGRESS**
+5. [Phase 4 — Package Manager Migration (Yarn → pnpm)](#5-phase-4--package-manager-migration-yarn--pnpm) ✅ **COMPLETED**
 6. [Phase 5 — React & UI Dependencies](#6-phase-5--react--ui-dependencies) ✅ **COMPLETED**
 7. [Phase 6 — Server Dependencies](#7-phase-6--server-dependencies) ✅ **COMPLETED**
 8. [Phase 7 — Code Fixes Required by Upgrades](#8-phase-7--code-fixes-required-by-upgrades) ✅ **COMPLETED**
@@ -1570,19 +1570,19 @@ Execute phases in this exact order to minimize breakage. Each phase should be co
 - [x] Test: `pnpm server` starts without TypeScript errors
 - [x] Commit: `build: upgrade to TypeScript 5`
 
-### Phase 4 — Package Manager Migration (Yarn → pnpm) 🔄 **IN PROGRESS**
-- [ ] 4.1 Install pnpm globally: `npm install -g pnpm`
-- [ ] 4.2 Update `package.json` with `packageManager` field: `pnpm@9.x.x`
-- [ ] 4.3 Create `.pnpmrc` configuration file
-- [ ] 4.4 Migrate lockfile: `rm yarn.lock && pnpm install`
-- [ ] 4.5 Update `package.json` `files` field to use `pnpm-lock.yaml`
-- [ ] 4.6 Update `.github/workflows/ci.yml` to use pnpm
-- [ ] 4.7 Update integration workflow in `.github/workflows/ci.yml`
-- [ ] 4.8 Update release workflow in `.github/workflows/release.yml`
-- [ ] 4.9 Update `integration/package.json` with pnpm migration
-- [ ] 4.10 Update `README.md` or `CONTRIBUTING.md` with pnpm setup instructions
-- [ ] 4.11 Test: full end-to-end with pnpm — start UI, start server, run tests
-- [ ] Commit: `chore: migrate from yarn to pnpm`
+### Phase 4 — Package Manager Migration (Yarn → pnpm) ✅ **COMPLETED**
+- [x] 4.1 Install pnpm globally: `npm install -g pnpm`
+- [x] 4.2 Update `package.json` with `packageManager` field: `pnpm@12.5.1`
+- [x] 4.3 Create `.pnpmrc` configuration file
+- [x] 4.4 Migrate lockfile: `rm yarn.lock && pnpm install`
+- [x] 4.5 Update `package.json` `files` field to use `pnpm-lock.yaml`
+- [x] 4.6 Update `.github/workflows/ci.yml` to use pnpm
+- [x] 4.7 Update integration workflow in `.github/workflows/ci.yml`
+- [x] 4.8 Update release workflow in `.github/workflows/release.yml`
+- [x] 4.9 Update `integration/package.json` with pnpm migration
+- [x] 4.10 Update `README.md` or `CONTRIBUTING.md` with pnpm setup instructions
+- [x] 4.11 Test: full end-to-end with pnpm — start UI, start server, run tests
+- [x] Commit: `chore: migrate from yarn to pnpm` (Git: 3d44ef8)
 
 ### Phase 5 — React & UI ✅ **COMPLETED**
 - [x] 5.1 Upgraded React to v18, replaced UI packages
