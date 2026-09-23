@@ -1,0 +1,3 @@
+mutation SetBail($bail: Boolean!) {
+  setBail(bail: $bail)
+}

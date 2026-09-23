@@ -1,0 +1,3 @@
+mutation RunTestByName($path: String!, $testName: String!) {
+  runTestByName(path: $path, testName: $testName)
+}

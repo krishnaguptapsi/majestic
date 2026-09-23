@@ -6,6 +6,17 @@ import Tippy from "@tippyjs/react";
 import SET_WATCH_MODE from "./set-watch-mode.gql";
 import SHOULD_COLLECT_COVERAGE from "./should-collect-coverage.gql";
 import SET_COLLECT_COVERAGE from "./set-collect-coverage.gql";
+import RUN_FAILED_TESTS from "./run-failed-tests.gql";
+import CLEAR_CACHE from "./clear-cache.gql";
+import SET_VERBOSE from "./set-verbose.gql";
+import IS_VERBOSE from "./is-verbose.gql";
+import SET_BAIL from "./set-bail.gql";
+import SHOULD_BAIL from "./should-bail.gql";
+import SET_FORCE_EXIT from "./set-force-exit.gql";
+import SHOULD_FORCE_EXIT from "./should-force-exit.gql";
+import JEST_CONFIG from "./jest-config.gql";
+import RUN_TEST_BY_NAME from "./run-test-by-name.gql";
+import RUN_WITH_OPEN_HANDLE_DETECTION from "./run-with-open-handle-detection.gql";
 import { Workspace } from "../../server/api/workspace/workspace";
 import { transform, filterFailure } from "./transformer";
 import Summary from "./summary";
@@ -22,7 +33,11 @@ import {
   FileText,
   Layers,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  AlertCircle,
+  Trash2,
+  List,
+  Zap
 } from "react-feather";
 import Button from "../components/button";
 import { RunnerStatus } from "../../server/api/runner/status";
@@ -75,7 +90,7 @@ interface Props {
   onShowCoverage: () => void;
 }
 
-export default function TestExplorer ({
+export default function TestExplorer({
   selectedFile,
   workspace,
   onSelectedFileChange,
@@ -92,6 +107,17 @@ export default function TestExplorer ({
   const passingTests = (summary && summary.passingTests) || [];
 
   const [run] = useMutation(RUN);
+  const [runFailedTests] = useMutation(RUN_FAILED_TESTS);
+  const [clearCache] = useMutation(CLEAR_CACHE);
+  const [setVerbose] = useMutation(SET_VERBOSE);
+  const { data: { isVerbose } = {} } = useQuery<any>(IS_VERBOSE);
+  const [setBail] = useMutation(SET_BAIL);
+  const { data: { shouldBail } = {} } = useQuery<any>(SHOULD_BAIL);
+  const [setForceExit] = useMutation(SET_FORCE_EXIT);
+  const { data: { shouldForceExit } = {} } = useQuery<any>(SHOULD_FORCE_EXIT);
+  const [runTestByName] = useMutation(RUN_TEST_BY_NAME);
+  const [runWithOpenHandleDetection] = useMutation(RUN_WITH_OPEN_HANDLE_DETECTION);
+  const { data: { jestConfig } = {} } = useQuery<any>(JEST_CONFIG);
 
   const [collapsedItems, setCollapsedItems] = useState({});
   const handleFileToggle = (path: string, isCollapsed: boolean) => {
@@ -152,6 +178,43 @@ export default function TestExplorer ({
   };
 
   const isRunning = runnerStatus && runnerStatus.running;
+
+  const runFailed = () => {
+    runFailedTests();
+  };
+
+  const clearJestCache = () => {
+    clearCache();
+  };
+
+  const toggleVerbose = () => {
+    setVerbose({
+      variables: {
+        verbose: !isVerbose
+      }
+    });
+  };
+
+  const toggleBail = () => {
+    setBail({
+      variables: {
+        bail: !shouldBail
+      }
+    });
+  };
+
+  const toggleForceExit = () => {
+    setForceExit({
+      variables: {
+        forceExit: !shouldForceExit
+      }
+    });
+  };
+
+  const toggleDetectOpenHandles = () => {
+    runWithOpenHandleDetection();
+  };
+
   const keys = useKeys();
   if (hasKeys(["Alt", "t"], keys)) {
     run();
@@ -161,6 +224,12 @@ export default function TestExplorer ({
     }
   } else if (hasKeys(["Alt", "s"], keys)) {
     onSearchOpen();
+  } else if (hasKeys(["Alt", "f"], keys)) {
+    runFailed();
+  } else if (hasKeys(["Alt", "c"], keys)) {
+    clearJestCache();
+  } else if (hasKeys(["Alt", "v"], keys)) {
+    toggleVerbose();
   }
 
   return (
@@ -221,6 +290,46 @@ export default function TestExplorer ({
               }}
             >
               <Search size={14} />
+            </Button>
+          </Tippy>
+          <Tippy content="Run failed tests (Alt+f)" placement="bottom">
+            <Button
+              minimal
+              onClick={runFailed}
+            >
+              <AlertCircle size={14} />
+            </Button>
+          </Tippy>
+          <Tippy content="Clear cache (Alt+c)" placement="bottom">
+            <Button
+              minimal
+              onClick={clearJestCache}
+            >
+              <Trash2 size={14} />
+            </Button>
+          </Tippy>
+          <Tippy content="Toggle verbose (Alt+v)" placement="bottom">
+            <Button
+              minimal={!isVerbose}
+              onClick={toggleVerbose}
+            >
+              <List size={14} />
+            </Button>
+          </Tippy>
+          <Tippy content={`Bail mode ${shouldBail ? 'on' : 'off'}`} placement="bottom">
+            <Button
+              minimal={!shouldBail}
+              onClick={toggleBail}
+            >
+              <Zap size={14} />
+            </Button>
+          </Tippy>
+          <Tippy content={`Force exit ${shouldForceExit ? 'on' : 'off'}`} placement="bottom">
+            <Button
+              minimal={!shouldForceExit}
+              onClick={toggleForceExit}
+            >
+              <StopCircle size={14} />
             </Button>
           </Tippy>
         </RightActionPanel>

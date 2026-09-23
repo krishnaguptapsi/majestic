@@ -1,0 +1,3 @@
+mutation SetVerbose($verbose: Boolean!) {
+  setVerbose(verbose: $verbose)
+}

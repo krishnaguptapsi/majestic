@@ -1,0 +1,3 @@
+mutation SetForceExit($forceExit: Boolean!) {
+  setForceExit(forceExit: $forceExit)
+}

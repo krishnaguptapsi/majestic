@@ -25,6 +25,15 @@ Majestic is a GUI for [Jest](https://jestjs.io/)
 - 🔍 Search tests
 - 💎 Works with flow and typescript projects
 - 📦 Works with Create react app
+- 🚀 Enhanced test management with Jest commands
+  - Run failed tests only
+  - Clear Jest cache
+  - Toggle verbose output
+  - Toggle bail mode (stop after first failure)
+  - Toggle force exit
+  - Detect open handles
+  - Show Jest configuration
+  - Run specific tests by name
 
 > Majestic supports Jest 20 and above
 
@@ -115,9 +124,15 @@ You can configure Majestic by adding `majestic` key to `package.json`.
 
 `alt+enter` - run selected file
 
-`alt+w` - watch
+`alt+w` - watch mode toggle
 
 `alt+s` - search
+
+`alt+f` - run failed tests
+
+`alt+c` - clear Jest cache
+
+`alt+v` - toggle verbose mode
 
 `escape` - close search
 
