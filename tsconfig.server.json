@@ -4,7 +4,10 @@
     "outDir": "./dist/server",
     "module": "commonjs",
     "target": "es2020",
-    "lib": ["es2020", "esnext.asynciterable"],
+    "lib": [
+      "es2020",
+      "esnext.asynciterable"
+    ],
     "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "node",
@@ -13,7 +16,6 @@
     "noImplicitThis": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
-    "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -21,5 +23,7 @@
     "newLine": "LF",
     "resolveJsonModule": true
   },
-  "include": ["server"]
+  "include": [
+    "server"
+  ]
 }

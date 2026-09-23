@@ -42,7 +42,7 @@ import {
   Trash2,
   List,
   Zap,
-  Git,
+  GitBranch,
   Clock
 } from "react-feather";
 import Button from "../components/button";
@@ -369,7 +369,7 @@ export default function TestExplorer({
               minimal={!changedFilesWithAncestor}
               onClick={toggleChangedFilesWithAncestor}
             >
-              <Git size={14} />
+              <GitBranch size={14} />
             </Button>
           </Tippy>
           <Tippy content="Set changed since date" placement="bottom">
