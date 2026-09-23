@@ -1,0 +1,88 @@
+version: 2
+
+updates:
+  # Root package dependencies
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: UTC
+    open-pull-requests-limit: 10
+    groups:
+      babel:
+        patterns:
+          - "@babel/*"
+          - "babel-*"
+      typescript:
+        patterns:
+          - "typescript"
+          - "ts-*"
+          - "@types/*"
+      webpack:
+        patterns:
+          - "webpack*"
+          - "*-loader"
+          - "*-webpack-plugin"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-*"
+          - "@types/react*"
+      apollo-graphql:
+        patterns:
+          - "@apollo/*"
+          - "graphql*"
+          - "type-graphql"
+    labels:
+      - dependencies
+      - automated
+    commit-message:
+      prefix: "chore"
+      include: scope
+    ignore:
+      # Keep these pinned to CJS-compatible versions (ESM-only in newer versions)
+      - dependency-name: "node-fetch"
+        versions: [">=3.0.0"]
+      - dependency-name: "open"
+        versions: [">=9.0.0"]
+      - dependency-name: "read-pkg-up"
+        versions: [">=8.0.0"]
+      - dependency-name: "get-port"
+        versions: [">=6.0.0"]
+      - dependency-name: "nanoid"
+        versions: [">=4.0.0"]
+
+  # Integration package dependencies
+  - package-ecosystem: npm
+    directory: /integration
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - automated
+      - integration
+    commit-message:
+      prefix: "chore(integration)"
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - automated
+      - github-actions
+    commit-message:
+      prefix: "ci"

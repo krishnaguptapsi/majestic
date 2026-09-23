@@ -1,0 +1,32 @@
+server:
+  - changed-files:
+      - any-glob-to-any-file: "server/**"
+
+ui:
+  - changed-files:
+      - any-glob-to-any-file: "ui/**"
+
+build:
+  - changed-files:
+      - any-glob-to-any-file: "scripts/**"
+      - any-glob-to-any-file: ".babelrc"
+      - any-glob-to-any-file: "tsconfig*.json"
+      - any-glob-to-any-file: "webpack*.js"
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: ".github/**"
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: "package.json"
+      - any-glob-to-any-file: "yarn.lock"
+
+integration:
+  - changed-files:
+      - any-glob-to-any-file: "integration/**"
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: "*.md"
+      - any-glob-to-any-file: "docs/**"

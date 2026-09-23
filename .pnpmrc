@@ -1,0 +1,17 @@
+# pnpm configuration for Majestic Pro
+# Use hoisted node_modules for compatibility with existing codebase
+node-linker=hoisted
+
+# Shamefully hoist all dependencies to maintain Yarn/npm-like behavior
+# This can be removed once the codebase is fully pnpm-native
+shamefully-hoist=true
+
+# Enable auto-installing peer dependencies
+auto-install-peers=true
+
+# Store directory for pnpm's content-addressable store
+# Uncomment to customize store location (default: ~/.pnpm-store)
+# store-dir=.pnpm
+
+# Verify the integrity of packages
+verify-store-integrity=true

@@ -1,5 +1,5 @@
 import { Application } from "express";
-import * as bodyParser from "body-parser";
+import express from "express";
 import { pubsub } from "../event-emitter";
 import { createLogger } from "../logger";
 
@@ -10,7 +10,7 @@ export const Events = {
   TEST_RESULT: "TEST_RESULT",
   RUN_START: "RUN_START",
   RUN_COMPLETE: "RUN_COMPLETE",
-  RUN_SUMMARY: "RUN_SUMMARY"
+  RUN_SUMMARY: "RUN_SUMMARY",
 };
 
 export interface ResultEvent {
@@ -31,47 +31,37 @@ export interface SummaryEvent {
 }
 
 export default function handlerApi(expressApp: Application) {
-  expressApp.use(
-    bodyParser.json({
-      limit: "50mb"
-    })
-  );
+  expressApp.use(express.json({ limit: "50mb" }));
+
   expressApp.post("/test-start", ({ body }, res) => {
     log("File execution start reported ", body.path);
-
     pubsub.publish(Events.TEST_START, {
       id: Events.TEST_START,
-      payload: {
-        path: body.path
-      }
+      payload: { path: body.path },
     });
     res.send("ok");
   });
 
   expressApp.post("/test-result", ({ body }, res) => {
     log("File result reported ", body.path);
-
     pubsub.publish(Events.TEST_RESULT, {
       id: Events.TEST_RESULT,
-      payload: body
+      payload: body,
     });
 
     if (body.aggregatedResult) {
       pubsub.publish(Events.RUN_SUMMARY, {
         id: Events.RUN_SUMMARY,
-        payload: {
-          summary: body.aggregatedResult
-        }
+        payload: { summary: body.aggregatedResult },
       });
     }
-
     res.send("ok");
   });
 
   expressApp.post("/run-start", (req, res) => {
     pubsub.publish(Events.RUN_START, {
       id: Events.RUN_START,
-      payload: req.body
+      payload: req.body,
     });
     res.send("ok");
   });
@@ -79,7 +69,7 @@ export default function handlerApi(expressApp: Application) {
   expressApp.post("/run-complete", (req, res) => {
     pubsub.publish(Events.RUN_COMPLETE, {
       id: Events.RUN_COMPLETE,
-      payload: req.body
+      payload: req.body,
     });
     res.send("ok");
   });

@@ -8,12 +8,13 @@ module.exports = env => ({
   output: {
     path: path.resolve(__dirname, '../dist/ui'),
     filename: 'ui.bundle.js',
+    clean: true,
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   devServer: {
-    contentBase: path.resolve(__dirname, '../dist/ui'),
+    static: path.resolve(__dirname, '../dist/ui'),
     hot: true,
     port: 9000,
   },
@@ -22,7 +23,7 @@ module.exports = env => ({
     rules: [
       {
         test: /\.(js|jsx|ts|tsx)$/,
-        exclude: /(node_modules)/,
+        exclude: /node_modules/,
         loader: 'babel-loader',
       },
       {
@@ -31,12 +32,7 @@ module.exports = env => ({
       },
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 50000,
-          },
-        },
+        type: 'asset/inline',
       },
       {
         test: /\.(graphql|gql)$/,
@@ -44,27 +40,20 @@ module.exports = env => ({
         loader: 'graphql-tag/loader',
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-            },
-          },
-        ],
+        test: /\.(png|svg|jpg|gif|ico)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]',
+        },
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Majestic',
-      template: require('html-webpack-template'),
-      appMountId: 'root',
-      inject: false,
+      template: path.resolve(__dirname, '../ui/index.html'),
       favicon: './ui/assets/favicon.ico',
     }),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       PRODUCTION: env.production === true,
     }),

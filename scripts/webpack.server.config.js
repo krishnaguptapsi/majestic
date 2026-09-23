@@ -10,10 +10,11 @@ module.exports = env => ({
     path: path.resolve(__dirname, '../dist/server'),
     filename: 'index.js',
     libraryTarget: 'commonjs2',
+    clean: true,
   },
   resolve: {
     mainFields: ['main'],
-    extensions: ['.ts', '.js', '.jsx'],
+    extensions: ['.ts', '.js'],
   },
   optimization: {
     minimize: false,
@@ -22,28 +23,25 @@ module.exports = env => ({
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        loader: 'babel-loader',
-      },
-      {
         test: /\.ts$/,
-        exclude: /(node_modules)/,
-        loader: 'awesome-typescript-loader',
+        exclude: /node_modules/,
+        loader: 'ts-loader',
         options: {
           transpileOnly: true,
-          configFileName: './tsconfig.server.json',
+          configFile: './tsconfig.server.json',
         },
       },
     ],
   },
   plugins: [
     new webpack.DefinePlugin({
-      PRODUCTION: env.production === 'production',
+      PRODUCTION: true,
     }),
-    new CopyPlugin([
-      { from: './server/services/jest-manager/scripts', to: './scripts' },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        { from: './server/services/jest-manager/scripts', to: './scripts' },
+      ],
+    }),
     new webpack.BannerPlugin({
       banner: '#!/usr/bin/env node',
       raw: true,

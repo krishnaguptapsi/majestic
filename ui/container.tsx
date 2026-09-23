@@ -1,6 +1,5 @@
 import React, { Component, Suspense } from "react";
-import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider } from "styled-components";
 import client from "./apollo-client";
 import App from "./app";
@@ -12,8 +11,8 @@ import Loading from "./loading";
 import { ErrorBoundary } from "./error";
 
 const GlobalStyle = createGlobalStyle`
- body { font-family: 'Open sans'; font-size: 13px; margin: 0px;}
- ${splitPanelCSS}
+  body { font-family: 'Open sans'; font-size: 13px; margin: 0px; }
+  ${splitPanelCSS}
 `;
 
 export default class Container extends Component {
@@ -22,15 +21,13 @@ export default class Container extends Component {
       <React.Fragment>
         <GlobalStyle />
         <ThemeProvider theme={theme}>
-          <ApolloHooksProvider client={client}>
-            <ApolloProvider client={client}>
-              <Suspense fallback={<Loading />}>
-                <ErrorBoundary>
-                  <App />
-                </ErrorBoundary>
-              </Suspense>
-            </ApolloProvider>
-          </ApolloHooksProvider>
+          <ApolloProvider client={client}>
+            <Suspense fallback={<Loading />}>
+              <ErrorBoundary>
+                <App />
+              </ErrorBoundary>
+            </Suspense>
+          </ApolloProvider>
         </ThemeProvider>
       </React.Fragment>
     );

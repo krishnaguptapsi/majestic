@@ -1,25 +1,18 @@
+# This workflow has been superseded by ci.yml
+# It is kept here only to avoid breaking any external badge URLs.
+# See .github/workflows/ci.yml for the current CI configuration.
+
 name: Node CI
 
-on: [push]
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
 
 jobs:
-  build:
+  redirect:
+    name: See ci.yml
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x]
-
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install, build, and test
-        run: |
-          yarn install
-          yarn prod
-          yarn integration
-        env:
-          CI: true
+      - run: echo "CI has moved to ci.yml — this job is a placeholder only."

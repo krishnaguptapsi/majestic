@@ -37,10 +37,10 @@ cd ./my-jest-project # go into a project with Jest
 npx majestic # execute majestic
 ```
 
-or install Majestic globally via Yarn and run majestic
+or install Majestic globally via pnpm and run majestic
 
 ```bash
-yarn global add majestic # install majestic globally
+pnpm add -g majestic # install majestic globally
 cd ./my-jest-project # go into a project with Jest
 majestic # execute majestic
 ```

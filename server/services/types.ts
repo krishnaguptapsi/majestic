@@ -18,4 +18,7 @@ export interface MajesticConfig {
   jestScriptPath: string;
   args?: string[];
   env?: { [key: string]: string };
+  bail?: boolean;
+  verbose?: boolean;
+  forceExit?: boolean;
 }

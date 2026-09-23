@@ -1,13 +1,12 @@
-import * as parseArgs from "minimist";
-import * as readPkgUp from "read-pkg-up";
-import * as resolvePkg from "resolve-pkg";
+import minimist from "minimist";
+import { readPackageUpSync } from "read-pkg-up";
+import { sync as resolveSync } from "resolve";
 import { MajesticConfig } from "./types";
 import { platform } from "os";
 import { join } from "path";
 import { existsSync } from "fs";
 import { createLogger } from "../logger";
 
-declare var consola: any;
 const log = createLogger("Config Resolver");
 
 export default class ConfigResolver {
@@ -28,17 +27,14 @@ export default class ConfigResolver {
         jestScriptPathFromPackage ||
         this.getJestScriptForCreateReactApp(projectRoot);
       args = ["--env=jsdom"];
-      env = {
-        CI: "true"
-      };
+      env = { CI: "true" };
     } else {
       log("Majestic configuration from Package.json: ", configFromPkgJson);
-
       jestScriptPath =
         jestScriptPathFromPackage || this.getJestScriptPath(projectRoot);
     }
 
-    const configArg = parseArgs(process.argv).config;
+    const configArg = minimist(process.argv.slice(2)).config;
 
     if (configArg && configFromPkgJson.configs) {
       args = [...args, ...(configFromPkgJson.configs[configArg].args || [])];
@@ -51,7 +47,7 @@ export default class ConfigResolver {
     const majesticConfig = {
       jestScriptPath: `"${jestScriptPath}"`,
       args,
-      env
+      env,
     };
 
     log("Resolved Majestic config :", majesticConfig);
@@ -59,36 +55,33 @@ export default class ConfigResolver {
   }
 
   private getJestScriptPath(projectRoot: string) {
-    const path = resolvePkg("jest", {
-      cwd: projectRoot
-    });
-    log("Path of resolved Jest script: ", path);
-
-    if (!path) {
-      consola.error(
-        "🚨 Majestic was unable to find Jest package in node_modules folder. But you can provide the path manually. Please take a look at the documentation at https://github.com/Raathigesh/majestic."
+    try {
+      const resolved = resolveSync("jest/bin/jest.js", { basedir: projectRoot });
+      log("Path of resolved Jest script: ", resolved);
+      return resolved;
+    } catch {
+      console.error(
+        "🚨 Majestic was unable to find Jest package in node_modules folder. Provide the path manually via jestScriptPath in package.json majestic config."
       );
-      process.exit();
+      process.exit(1);
     }
-    return join(path, "bin/jest.js");
   }
 
   private getJestScriptForCreateReactApp(projectRoot: string) {
-    const path = resolvePkg("react-scripts", {
-      cwd: projectRoot
+    const resolved = resolveSync("react-scripts/scripts/test.js", {
+      basedir: projectRoot,
     });
-    return join(path, "scripts/test.js");
+    return resolved;
   }
 
   private getPackageJson(rootPath: string) {
-    return readPkgUp.sync({
-      cwd: rootPath
-    }).pkg;
+    const result = readPackageUpSync({ cwd: rootPath });
+    return result?.packageJson;
   }
 
   private getConfigFromPackageJson(projectRoot: string) {
-    const packageJson = this.getPackageJson(projectRoot);
-    if (packageJson.majestic) {
+    const packageJson = this.getPackageJson(projectRoot) as any;
+    if (packageJson?.majestic) {
       return packageJson.majestic;
     }
     return null;

@@ -1,0 +1,102 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in Majestic
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill out the sections below as completely as possible.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
+        - label: I have read the [Troubleshooting guide](../blob/main/Troubleshooting.md)
+          required: true
+
+  - type: input
+    id: majestic-version
+    attributes:
+      label: Majestic version
+      placeholder: "e.g. 2.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: jest-version
+    attributes:
+      label: Jest version
+      placeholder: "e.g. 29.7.0"
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      placeholder: "e.g. 20.11.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Windows
+        - Linux (Ubuntu)
+        - Linux (other)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Majestic in project '...'
+        2. Click on '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: Reproduction repository
+      description: Link to a minimal GitHub repo that reproduces the issue.
+      placeholder: "https://github.com/..."
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or error output
+      description: Run Majestic with `--debug` flag and paste the output here.
+      render: shell
+
+  - type: textarea
+    id: majestic-config
+    attributes:
+      label: Majestic config in package.json
+      render: json

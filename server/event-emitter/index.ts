@@ -1,3 +1,3 @@
-import { PubSub } from "graphql-yoga";
+import { PubSub } from "graphql-subscriptions";
 
 export const pubsub = new PubSub();

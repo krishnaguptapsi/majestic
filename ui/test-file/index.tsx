@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import styled from "styled-components";
 import { space, color } from "styled-system";
-import { useMutation } from "react-apollo-hooks";
+import { useMutation } from "@apollo/client";
 import FILEITEMS_SUB from "./file-items-subscription.gql";
 import FILEITEMS from "./query.gql";
 import RUNFILE from "./run-file.gql";
@@ -68,13 +68,13 @@ function TestFile({ selectedFilePath, isRunning, projectRoot, onStop }: Props) {
     fileItem => fileItem.type === "todo"
   ).length;
 
-  const runFile = useMutation(RUNFILE, {
+  const [runFile] = useMutation(RUNFILE, {
     variables: {
       path: selectedFilePath
     }
   });
 
-  const updateSnapshot = useMutation(UPDATE_SNAPSHOT, {
+  const [updateSnapshot] = useMutation(UPDATE_SNAPSHOT, {
     variables: {
       path: selectedFilePath
     }

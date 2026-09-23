@@ -1,14 +1,14 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import "@babel/polyfill";
+import { createRoot } from "react-dom/client";
 import Container from "./container";
-import "react-tippy/dist/tippy.css";
+import "@tippyjs/react/dist/tippy.css";
 
-ReactDOM.render(<Container />, document.getElementById("root"));
+const rootElement = document.getElementById("root")!;
+const root = createRoot(rootElement);
+root.render(<Container />);
 
 if ((module as any).hot) {
   (module as any).hot.accept("./container", () => {
-    const NextApp = require("./container").default;
-    ReactDOM.render(<Container />, document.getElementById("root"));
+    root.render(<Container />);
   });
 }

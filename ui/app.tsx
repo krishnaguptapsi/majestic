@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import SplitPane from "react-split-pane";
-import { useQuery, useMutation } from "react-apollo-hooks";
+import { PanelGroup, Panel, PanelResizeHandle } from "react-resizable-panels";
+import { useQuery, useMutation } from "@apollo/client";
 import Sidebar from "./sidebar";
 import TestFile from "./test-file";
 import APP from "./app.gql";
@@ -25,12 +25,22 @@ const ContainerDiv = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+  height: 100vh;
 `;
 
-const PlaceHolder = styled.div<any>`
+const PlaceHolder = styled.div<{ bg?: string }>`
   display: flex;
   height: 100%;
   ${color}
+`;
+
+const ResizeHandle = styled(PanelResizeHandle)`
+  width: 4px;
+  background: #2a2a2a;
+  cursor: col-resize;
+  &:hover {
+    background: #444;
+  }
 `;
 
 interface AppResult {
@@ -44,22 +54,22 @@ interface WorkspaceResult {
 export default function App() {
   const {
     data: {
-      app: { selectedFile }
+      app: { selectedFile },
     },
-    refetch
+    refetch,
   } = useQuery<AppResult>(APP);
 
   const {
     data: { workspace },
-    refetch: refetchFiles
+    refetch: refetchFiles,
   } = useQuery<WorkspaceResult>(WORKSPACE);
 
   const { data: summary }: { data: Summary } = useSubscription(
     SUMMARY_QUERY,
     SUMMARY_SUBS,
     {},
-    result => result.summary,
-    result => result.changeToSummary,
+    (result: any) => result.summary,
+    (result: any) => result.changeToSummary,
     "Summary Sub"
   );
 
@@ -67,26 +77,21 @@ export default function App() {
     RUNNER_STATUS_QUERY,
     RUNNER_STATUS_SUBS,
     {},
-    result => result.runnerStatus,
-    result => result.runnerStatusChange,
+    (result: any) => result.runnerStatus,
+    (result: any) => result.runnerStatusChange,
     "Runner subs"
   );
 
-  const setSelectedFile = useMutation(SET_SELECTED_FILE);
+  const [setSelectedFile] = useMutation(SET_SELECTED_FILE);
   const handleFileSelection = (path: string | null) => {
     if (path !== null) {
       setShowCoverage(false);
     }
-
-    setSelectedFile({
-      variables: {
-        path
-      }
-    });
+    setSelectedFile({ variables: { path } });
     refetch();
   };
 
-  const stopRunner = useMutation(STOP_RUNNER);
+  const [stopRunner] = useMutation(STOP_RUNNER);
 
   const [isSearchOpen, setSearchOpen] = useState(false);
   const keys = useKeys();
@@ -98,51 +103,42 @@ export default function App() {
 
   return (
     <ContainerDiv>
-      <SplitPane
-        defaultSize={"calc(100% - 300px)"}
-        split="vertical"
-        primary="second"
-        pane1Style={{ minWidth: "300px" }}
-        pane2Style={{ maxWidth: "calc(100% - 300px)" }}
-      >
-        <Sidebar
-          workspace={workspace}
-          selectedFile={selectedFile}
-          onSelectedFileChange={handleFileSelection}
-          summary={summary}
-          runnerStatus={runnerStatus}
-          showCoverage={showCoverage}
-          onSearchOpen={() => {
-            setSearchOpen(true);
-          }}
-          onRefreshFiles={() => {
-            refetchFiles();
-          }}
-          onStop={() => {
-            stopRunner();
-          }}
-          onShowCoverage={() => {
-            setShowCoverage(!showCoverage);            
-          }}
-        />
-        {showCoverage && <CoveragePanel />}
-        {selectedFile ? (
-          <TestFile
-            projectRoot={workspace.projectRoot}
-            selectedFilePath={selectedFile}
-            isRunning={
-              (runnerStatus.running &&
-                runnerStatus.activeFile === selectedFile) ||
-              ((summary && summary.executingTests) || []).includes(selectedFile)
-            }
-            onStop={() => {
-              stopRunner();
-            }}
+      <PanelGroup direction="horizontal">
+        <Panel defaultSize={25} minSize={18}>
+          <Sidebar
+            workspace={workspace}
+            selectedFile={selectedFile}
+            onSelectedFileChange={handleFileSelection}
+            summary={summary}
+            runnerStatus={runnerStatus}
+            showCoverage={showCoverage}
+            onSearchOpen={() => setSearchOpen(true)}
+            onRefreshFiles={() => refetchFiles()}
+            onStop={() => stopRunner()}
+            onShowCoverage={() => setShowCoverage(!showCoverage)}
           />
-        ) : (
-          <PlaceHolder bg="dark" />
-        )}
-      </SplitPane>
+        </Panel>
+        <ResizeHandle />
+        <Panel defaultSize={75}>
+          {showCoverage && <CoveragePanel />}
+          {selectedFile ? (
+            <TestFile
+              projectRoot={workspace.projectRoot}
+              selectedFilePath={selectedFile}
+              isRunning={
+                (runnerStatus.running &&
+                  runnerStatus.activeFile === selectedFile) ||
+                ((summary && summary.executingTests) || []).includes(
+                  selectedFile
+                )
+              }
+              onStop={() => stopRunner()}
+            />
+          ) : (
+            <PlaceHolder bg="dark" />
+          )}
+        </Panel>
+      </PanelGroup>
       <Search
         projectRoot={workspace.projectRoot}
         show={isSearchOpen}

@@ -6,7 +6,7 @@ import {
   Root,
   Mutation
 } from "type-graphql";
-import * as throttle from "lodash.throttle";
+import throttle from "lodash.throttle";
 import { Workspace } from "./workspace";
 import Project from "../../services/project";
 import { root } from "../../services/cli";
@@ -17,7 +17,6 @@ import { TestFileResult } from "./test-result/file-result";
 import {
   Events,
   ResultEvent,
-  SummaryEvent
 } from "../../services/result-handler-api";
 import Results from "../../services/results";
 import { WatcherEvents, FileChangeEvent } from "../../services/file-watcher";
@@ -26,7 +25,7 @@ import { pubsub } from "../../event-emitter";
 import ConfigResolver from "../../services/config-resolver";
 import { MajesticConfig } from "../../services/types";
 
-const SummaryEvent: "SummaryEvent" = "SummaryEvent";
+const SUMMARY_EVENT_TOPIC = "SummaryEvent" as const;
 
 @Resolver(Workspace)
 export default class WorkspaceResolver {
@@ -97,10 +96,10 @@ export default class WorkspaceResolver {
   }
 
   private notifySummaryChange = throttle(() => {
-    pubsub.publish(SummaryEvent, {});
+    pubsub.publish(SUMMARY_EVENT_TOPIC, {});
   }, 1000);
 
-  @Query(returns => Workspace)
+  @Query(() => Workspace)
   workspace() {
     const workspace = new Workspace();
     workspace.projectRoot = this.project.projectRoot;
@@ -117,20 +116,20 @@ export default class WorkspaceResolver {
     return workspace;
   }
 
-  @Query(returns => TestFile)
+  @Query(() => TestFile)
   async file(@Arg("path") path: string) {
     const file = new TestFile();
     file.items = await inspect(path);
     return file;
   }
 
-  @Query(returns => TestFileResult, { nullable: true })
+  @Query(() => TestFileResult, { nullable: true })
   result(@Arg("path") path: string) {
     const result = this.results.getResult(path);
     return result ? result : null;
   }
 
-  @Subscription(returns => TestFile, {
+  @Subscription(() => TestFile, {
     topics: [WatcherEvents.FILE_CHANGE]
   })
   async fileChange(@Root() event: FileChangeEvent, @Arg("path") path: string) {
@@ -139,7 +138,7 @@ export default class WorkspaceResolver {
     return file;
   }
 
-  @Subscription(returns => TestFileResult, {
+  @Subscription(() => TestFileResult, {
     topics: [
       Events.TEST_START,
       Events.TEST_RESULT,
@@ -173,10 +172,10 @@ export default class WorkspaceResolver {
     return result;
   }
 
-  @Subscription(returns => Summary, {
-    topics: [SummaryEvent]
+  @Subscription(() => Summary, {
+    topics: [SUMMARY_EVENT_TOPIC]
   })
-  async changeToSummary(@Root() event: SummaryEvent): Promise<Summary> {
+  async changeToSummary(@Root() event: any): Promise<Summary> {
     const {
       numFailedTests,
       numPassedTests,
@@ -197,7 +196,7 @@ export default class WorkspaceResolver {
     return summary;
   }
 
-  @Query(returns => Summary, { nullable: true })
+  @Query(() => Summary, { nullable: true })
   summary() {
     const {
       numFailedTests,

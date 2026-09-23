@@ -1,27 +1,13 @@
-declare var consola: any;
+import { createConsola } from "consola";
 
-export function debugLog(tag: string, ...args: any) {
-  if (process.env.DEBUG_LOG !== "") {
-    consola.info({
-      tag,
-      args
-    });
-  }
-}
+const consola = createConsola();
 
-export function executeAndLog(
-  tag: string,
-  message: string,
-  execute: () => any
-) {
-  if (process.env.DEBUG_LOG !== "") {
-    consola.info({
-      tag,
-      args: [message, execute()]
-    });
+export function debugLog(tag: string, ...args: any[]) {
+  if (process.env.DEBUG_LOG) {
+    consola.info({ tag, args });
   }
 }
 
 export function createLogger(tag: string) {
-  return (...args: any) => debugLog(tag, ...args);
+  return (...args: any[]) => debugLog(tag, ...args);
 }

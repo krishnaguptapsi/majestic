@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useMutation, useQuery } from "react-apollo-hooks";
+import { useMutation, useQuery } from "@apollo/client";
 import { space, color } from "styled-system";
-import { Tooltip } from "react-tippy";
+import Tippy from "@tippyjs/react";
 import SET_WATCH_MODE from "./set-watch-mode.gql";
 import SHOULD_COLLECT_COVERAGE from "./should-collect-coverage.gql";
 import SET_COLLECT_COVERAGE from "./set-collect-coverage.gql";
@@ -91,7 +91,7 @@ export default function TestExplorer ({
   const executingItems = (summary && summary.executingTests) || [];
   const passingTests = (summary && summary.passingTests) || [];
 
-  const run = useMutation(RUN);
+  const [run] = useMutation(RUN);
 
   const [collapsedItems, setCollapsedItems] = useState({});
   const handleFileToggle = (path: string, isCollapsed: boolean) => {
@@ -136,13 +136,13 @@ export default function TestExplorer ({
     data: { shouldCollectCoverage },
     refetch: refetchCoverageFlag
   } = useQuery<any>(SHOULD_COLLECT_COVERAGE);
-  const setCollectCoverage = useMutation(SET_COLLECT_COVERAGE);
+  const [setCollectCoverage] = useMutation(SET_COLLECT_COVERAGE);
 
   const handleFileSelection = (path: string) => {
     onSelectedFileChange(path);
   };
 
-  const setWatchMode = useMutation(SET_WATCH_MODE);
+  const [setWatchMode] = useMutation(SET_WATCH_MODE);
   const handleSetWatchModel = (watch: boolean) => {
     setWatchMode({
       variables: {
@@ -167,7 +167,7 @@ export default function TestExplorer ({
     <Container p={4} bg="veryDark" color="text">
       <Logo />
       <ActionsPanel mb={4}>
-        <Tooltip title="Run all tests" position="bottom" size="small">
+        <Tippy content="Run all tests" placement="bottom">
           <Button
             icon={isRunning ? <StopCircle size={15} /> : <Play size={15} />}
             size="sm"
@@ -181,9 +181,9 @@ export default function TestExplorer ({
           >
             {isRunning ? "Stop" : "Run tests"}
           </Button>
-        </Tooltip>
+        </Tippy>
         <RightActionPanel>
-          <Tooltip title="Toggle watch mode" position="bottom" size="small">
+          <Tippy content="Toggle watch mode" placement="bottom">
             <Button
               icon={<Eye size={14} />}
               minimal
@@ -197,8 +197,8 @@ export default function TestExplorer ({
                 ? "Stop Watching"
                 : "Watch"}
             </Button>
-          </Tooltip>
-          <Tooltip title="Collect coverage" position="bottom" size="small">
+          </Tippy>
+          <Tippy content="Collect coverage" placement="bottom">
             <Button
               minimal={!shouldCollectCoverage}
               onClick={() => {
@@ -212,8 +212,8 @@ export default function TestExplorer ({
             >
               <FileText size={14} />
             </Button>
-          </Tooltip>
-          <Tooltip title="Search test files" position="bottom" size="small">
+          </Tippy>
+          <Tippy content="Search test files" placement="bottom">
             <Button
               minimal
               onClick={() => {
@@ -222,7 +222,7 @@ export default function TestExplorer ({
             >
               <Search size={14} />
             </Button>
-          </Tooltip>
+          </Tippy>
         </RightActionPanel>
       </ActionsPanel>
       <Summary summary={summary} />
@@ -230,11 +230,7 @@ export default function TestExplorer ({
         <FilesHeader>Tests</FilesHeader>
         <RightFilesAction>
           {summary && summary.failedTests && summary.failedTests.length > 0 && (
-            <Tooltip
-              title="Show only failed tests"
-              position="top"
-              size="small"
-            >
+            <Tippy content="Show only failed tests" placement="top">
               <Button
                 size="sm"
                 minimal={!showFailedTests}
@@ -244,10 +240,10 @@ export default function TestExplorer ({
               >
                 <ZapOff size={10} />
               </Button>
-            </Tooltip>
+            </Tippy>
           )}
           {!showFailedTests && (
-            <Tooltip title="Collapse All Tests" position="top" size="small">
+            <Tippy content="Collapse All Tests" placement="top">
               <Button
                 size="sm"
                 minimal
@@ -255,10 +251,10 @@ export default function TestExplorer ({
               >
                 <ChevronRight size={10} />
               </Button>
-            </Tooltip>
+            </Tippy>
           )}
           {!showFailedTests && (
-            <Tooltip title="Expand All Tests" position="top" size="small">
+            <Tippy content="Expand All Tests" placement="top">
               <Button
                 size="sm"
                 minimal
@@ -266,14 +262,10 @@ export default function TestExplorer ({
               >
                 <ChevronDown size={10} />
               </Button>
-            </Tooltip>
+            </Tippy>
           )}
           {summary && summary.haveCoverageReport && (
-            <Tooltip
-              title="Show coverage report"
-              position="top"
-              size="small"
-            >
+            <Tippy content="Show coverage report" placement="top">
               <Button
                 size="sm"
                 minimal={!showCoverage}
@@ -283,9 +275,9 @@ export default function TestExplorer ({
               >
                 <Layers size={10} />
               </Button>
-            </Tooltip>
+            </Tippy>
           )}
-          <Tooltip title="Refresh files" position="top" size="small">
+          <Tippy content="Refresh files" placement="top">
             <Button
               size="sm"
               minimal
@@ -295,7 +287,7 @@ export default function TestExplorer ({
             >
               <RefreshCw size={10} />
             </Button>
-          </Tooltip>
+          </Tippy>
         </RightFilesAction>
       </FileHeader>
       <Tree

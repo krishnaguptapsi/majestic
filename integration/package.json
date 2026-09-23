@@ -1,17 +1,18 @@
 {
   "name": "integration",
   "version": "1.0.0",
+  "packageManager": "pnpm@12.5.1",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "prepare-packages": "yarn && cd ./projects/basic && yarn",
+    "prepare-packages": "pnpm install && cd ./projects/basic && pnpm install",
     "open-tests": "cypress open",
     "run-tests": "wait-on http://localhost:9000 && cypress run --record --key a7d33ff7-5893-4158-9ec2-f71b32138c8b",
     "kill-app": "node ./kill.js",
     "prepare-basic-app": "node ./kill.js && cd ./projects/basic && node ../../../dist/server/index.js --port=9000 --debug",
-    "integration-app": "concurrently --success=last \"yarn prepare-basic-app\"  \"yarn run-tests\"",
-    "run-integration": "yarn integration-app",
-    "run-in-ci": "yarn prepare-packages && yarn run-integration"
+    "integration-app": "concurrently --success=last \"pnpm prepare-basic-app\"  \"pnpm run-tests\"",
+    "run-integration": "pnpm integration-app",
+    "run-in-ci": "pnpm prepare-packages && pnpm run-integration"
   },
   "dependencies": {
     "concurrently": "^4.1.0",
