@@ -17,6 +17,10 @@ import SHOULD_FORCE_EXIT from "./should-force-exit.gql";
 import JEST_CONFIG from "./jest-config.gql";
 import RUN_TEST_BY_NAME from "./run-test-by-name.gql";
 import RUN_WITH_OPEN_HANDLE_DETECTION from "./run-with-open-handle-detection.gql";
+import SET_CHANGED_SINCE from "./set-changed-since.gql";
+import GET_CHANGED_SINCE from "./get-changed-since.gql";
+import SET_CHANGED_FILES_WITH_ANCESTOR from "./set-changed-files-with-ancestor.gql";
+import SHOULD_USE_CHANGED_FILES_WITH_ANCESTOR from "./should-use-changed-files-with-ancestor.gql";
 import { Workspace } from "../../server/api/workspace/workspace";
 import { transform, filterFailure } from "./transformer";
 import Summary from "./summary";
@@ -37,7 +41,9 @@ import {
   AlertCircle,
   Trash2,
   List,
-  Zap
+  Zap,
+  Git,
+  Clock
 } from "react-feather";
 import Button from "../components/button";
 import { RunnerStatus } from "../../server/api/runner/status";
@@ -118,8 +124,13 @@ export default function TestExplorer({
   const [runTestByName] = useMutation(RUN_TEST_BY_NAME);
   const [runWithOpenHandleDetection] = useMutation(RUN_WITH_OPEN_HANDLE_DETECTION);
   const { data: { jestConfig } = {} } = useQuery<any>(JEST_CONFIG);
+  const [setChangedSince] = useMutation(SET_CHANGED_SINCE);
+  const { data: { changedSince } = {} } = useQuery<any>(GET_CHANGED_SINCE);
+  const [setChangedFilesWithAncestor] = useMutation(SET_CHANGED_FILES_WITH_ANCESTOR);
+  const { data: { changedFilesWithAncestor } = {} } = useQuery<any>(SHOULD_USE_CHANGED_FILES_WITH_ANCESTOR);
 
   const [collapsedItems, setCollapsedItems] = useState({});
+  const [changedSinceDate, setChangedSinceDate] = useState("");
   const handleFileToggle = (path: string, isCollapsed: boolean) => {
     setCollapsedItems({
       ...collapsedItems,
@@ -215,6 +226,25 @@ export default function TestExplorer({
     runWithOpenHandleDetection();
   };
 
+  const handleSetChangedSince = (date: string) => {
+    setChangedSinceDate(date);
+    if (date) {
+      setChangedSince({
+        variables: {
+          date
+        }
+      });
+    }
+  };
+
+  const toggleChangedFilesWithAncestor = () => {
+    setChangedFilesWithAncestor({
+      variables: {
+        enabled: !changedFilesWithAncestor
+      }
+    });
+  };
+
   const keys = useKeys();
   if (hasKeys(["Alt", "t"], keys)) {
     run();
@@ -230,6 +260,8 @@ export default function TestExplorer({
     clearJestCache();
   } else if (hasKeys(["Alt", "v"], keys)) {
     toggleVerbose();
+  } else if (hasKeys(["Alt", "d"], keys)) {
+    toggleChangedFilesWithAncestor();
   }
 
   return (
@@ -331,6 +363,31 @@ export default function TestExplorer({
             >
               <StopCircle size={14} />
             </Button>
+          </Tippy>
+          <Tippy content={`Changed files with ancestor ${changedFilesWithAncestor ? 'on' : 'off'} (Alt+d)`} placement="bottom">
+            <Button
+              minimal={!changedFilesWithAncestor}
+              onClick={toggleChangedFilesWithAncestor}
+            >
+              <Git size={14} />
+            </Button>
+          </Tippy>
+          <Tippy content="Set changed since date" placement="bottom">
+            <input
+              type="date"
+              value={changedSinceDate}
+              onChange={(e) => handleSetChangedSince(e.target.value)}
+              style={{
+                padding: "4px 8px",
+                marginLeft: "8px",
+                marginRight: "8px",
+                borderRadius: "4px",
+                border: "1px solid #555",
+                backgroundColor: "#333",
+                color: "#fff",
+                fontSize: "12px"
+              }}
+            />
           </Tippy>
         </RightActionPanel>
       </ActionsPanel>

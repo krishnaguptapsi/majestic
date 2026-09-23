@@ -1,0 +1,3 @@
+mutation SetChangedFilesWithAncestor($enabled: Boolean!) {
+  setChangedFilesWithAncestor(enabled: $enabled)
+}

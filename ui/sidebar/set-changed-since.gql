@@ -1,0 +1,3 @@
+mutation SetChangedSince($date: String!) {
+  setChangedSince(date: $date)
+}

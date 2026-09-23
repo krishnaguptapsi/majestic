@@ -34,6 +34,8 @@ Majestic is a GUI for [Jest](https://jestjs.io/)
   - Detect open handles
   - Show Jest configuration
   - Run specific tests by name
+  - Run tests for files changed since a specific date
+  - Run tests for changed files and affected descendants
 
 > Majestic supports Jest 20 and above
 
@@ -133,6 +135,8 @@ You can configure Majestic by adding `majestic` key to `package.json`.
 `alt+c` - clear Jest cache
 
 `alt+v` - toggle verbose mode
+
+`alt+d` - toggle changed files with ancestor mode
 
 `escape` - close search
 
