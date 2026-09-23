@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { PanelGroup, Panel, PanelResizeHandle } from "react-resizable-panels";
 import { useQuery, useMutation } from "@apollo/client";
@@ -20,6 +20,8 @@ import { color } from "styled-system";
 import { RunnerStatus } from "../server/api/runner/status";
 import { Summary } from "../server/api/workspace/summary";
 import CoveragePanel from "./coverage-panel";
+import { BackgroundFuturistic } from "./components/BackgroundAnimation";
+import { TestStatusOverlay } from "./components/TestStatusOverlay";
 
 const ContainerDiv = styled.div`
   display: flex;
@@ -101,8 +103,21 @@ export default function App() {
 
   const [showCoverage, setShowCoverage] = useState(false);
 
+  // Calculate test status for overlay
+  const testStatus = useMemo(() => {
+    const isRunning = runnerStatus?.running || false;
+    const passedCount = summary?.numPassedTests || 0;
+    const failedCount = summary?.numFailedTests || 0;
+    const totalCount = summary?.numTotalTests || 0;
+
+    return { isRunning, passedCount, failedCount, totalCount };
+  }, [runnerStatus, summary]);
+
   return (
     <ContainerDiv>
+      {/* Background Animation */}
+      <BackgroundFuturistic />
+
       <PanelGroup direction="horizontal">
         <Panel defaultSize={25} minSize={18}>
           <Sidebar
@@ -139,6 +154,18 @@ export default function App() {
           )}
         </Panel>
       </PanelGroup>
+
+      {/* Test Status Overlay */}
+      <TestStatusOverlay
+        isRunning={testStatus.isRunning}
+        passedCount={testStatus.passedCount}
+        failedCount={testStatus.failedCount}
+        totalCount={testStatus.totalCount}
+        position="bottom-right"
+        showBot
+        compact={false}
+      />
+
       <Search
         projectRoot={workspace.projectRoot}
         show={isSearchOpen}

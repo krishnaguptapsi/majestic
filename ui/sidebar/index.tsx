@@ -46,6 +46,7 @@ import {
   Clock
 } from "react-feather";
 import Button from "../components/button";
+import { ThemeToggle } from "../components/ThemeToggle";
 import { RunnerStatus } from "../../server/api/runner/status";
 import Tree from "./tree";
 import Logo from "./logo";
@@ -389,6 +390,7 @@ export default function TestExplorer({
               }}
             />
           </Tippy>
+          <ThemeToggle />
         </RightActionPanel>
       </ActionsPanel>
       <Summary summary={summary} />
