@@ -9,9 +9,9 @@ import minimist from "minimist";
 import open from "open";
 import { initializeStaticRoutes } from "./static-files";
 import { root } from "./services/cli";
-import { readPackageUpSync } from "read-pkg-up";
+import readPkgUp from "read-pkg-up";
 
-const pkgResult = readPackageUpSync({ cwd: __dirname });
+const pkgResult = readPkgUp.sync({ cwd: __dirname });
 const pkg = pkgResult?.packageJson;
 
 const args = minimist(process.argv.slice(2));
@@ -45,7 +45,7 @@ async function main() {
 
     server.listen(port, async () => {
       const url = `http://localhost:${port}`;
-      console.log(`⚡  Majestic v${pkg?.version} is running at ${url}`);
+      console.log(`⚡ Majestic-Pro v${pkg?.version} is running at ${url}`);
       if (!args.noOpen) {
         await open(url);
       }

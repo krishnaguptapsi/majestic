@@ -1,5 +1,5 @@
 import minimist from "minimist";
-import { readPackageUpSync } from "read-pkg-up";
+import readPkgUp from "read-pkg-up";
 import { sync as resolveSync } from "resolve";
 import { MajesticConfig } from "./types";
 import { platform } from "os";
@@ -75,7 +75,7 @@ export default class ConfigResolver {
   }
 
   private getPackageJson(rootPath: string) {
-    const result = readPackageUpSync({ cwd: rootPath });
+    const result = readPkgUp.sync({ cwd: rootPath });
     return result?.packageJson;
   }
 

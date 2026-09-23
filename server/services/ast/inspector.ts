@@ -1,5 +1,5 @@
 import traverse from "@babel/traverse";
-import * as nanoid from "nanoid";
+import { nanoid } from "nanoid";
 import { parse } from "./parser";
 import { readFile } from "fs";
 import { TestItem, TestItemType } from "../../api/workspace/test-item";

@@ -156,7 +156,7 @@ export default class Results {
     const sourceMapStore = createSourceMapStore();
     const coverageMap = createCoverageMap(data);
     const transformed = sourceMapStore.transformCoverage(coverageMap);
-    const coverageSummary = transformed.map.getCoverageSummary();
+    const coverageSummary = (transformed as any).map.getCoverageSummary();
 
     const statementCoverage = coverageSummary.statements.pct as any;
     const branchCoverage = coverageSummary.branches.pct as any;

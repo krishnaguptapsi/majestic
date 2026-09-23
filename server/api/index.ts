@@ -7,6 +7,6 @@ import App from "./app/resolver";
 export async function getSchema() {
   return await buildSchema({
     resolvers: [Workspace, Runner, App],
-    pubSub: pubsub,
+    pubSub: pubsub as any,
   });
 }
