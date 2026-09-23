@@ -14,8 +14,9 @@ This document provides 100% detailed instructions for upgrading the Majestic cod
 6. [Phase 5 — React & UI Dependencies](#6-phase-5--react--ui-dependencies) ✅ **COMPLETED**
 7. [Phase 6 — Server Dependencies](#7-phase-6--server-dependencies) ✅ **COMPLETED**
 8. [Phase 7 — Code Fixes Required by Upgrades](#8-phase-7--code-fixes-required-by-upgrades) ✅ **COMPLETED**
-9. [Phase 8 — New Jest Commands](#9-phase-8--new-jest-commands)
-10. [Execution Checklist](#10-execution-checklist)
+9. [Phase 8 — New Jest Commands](#9-phase-8--new-jest-commands) ✅ **COMPLETED**
+10. [Phase 9 — UI Modernization with Futuristic Bot & Animations](#11-phase-9--ui-modernization-with-futuristic-bot--animations) 🚀 **IN PROGRESS**
+11. [Execution Checklist](#12-execution-checklist)
 
 ---
 
@@ -1617,7 +1618,7 @@ Execute phases in this exact order to minimize breakage. Each phase should be co
 - [x] 7.6 Fixed `styled-components` generic types across UI
 - [x] 7.7 Fixed `workspace/resolver.ts` — SummaryEvent naming conflict
 
-### Phase 8 — New Jest Commands 🚀 **IN PROGRESS**
+### Phase 8 — New Jest Commands ✅ **COMPLETED**
 - [x] 8.1 Run Test by Name — server-side implementation already exists in jest-manager/index.ts
 - [x] 8.2 Run Failed Tests — server-side implementation already exists
 - [x] 8.3 Bail Mode Toggle — server-side implementation already exists
@@ -1630,33 +1631,511 @@ Execute phases in this exact order to minimize breakage. Each phase should be co
 - [x] 8.10 UI Components Added — buttons/toggles added to sidebar with handler functions
 - [x] 8.11 Keyboard Shortcuts Implemented — Alt+f, Alt+c, Alt+v added to sidebar keyboard handler
 - [x] 8.12 README Updated — new features and shortcuts documented
-- [ ] 8.13 Build Verification — verify webpack build completes without errors
-- [ ] 8.14 End-to-End Testing — test all new commands in running UI
-- [ ] 8.15 Final Commit — commit all Phase 8 changes
-- [x] 7.8 Fixed `server/index.ts` — removed chrome-launcher
-- [x] 7.9 Fixed `type-graphql` v2 decorator changes
+- [x] 8.13 Build Verification — verify webpack build completes without errors
+- [x] 8.14 End-to-End Testing — test all new commands in running UI
+- [x] 8.15 Final Commit — commit all Phase 8 changes
 - [x] Test: full build `pnpm prod` with zero TypeScript errors
-- [x] Commit: `fix: all code fixes for upgraded dependencies`
+- [x] Commit: `feat: add new Jest commands - bail, verbose, clearCache, runFailed, runByName, showConfig, forceExit, detectOpenHandles`
 
-### Phase 8 — New Jest Commands 📋 **TODO**
-- [ ] 8.1 Run test by name — server + UI
-- [ ] 8.2 Run only failed tests — server + UI
-- [ ] 8.3 Bail on first failure — server + UI
-- [ ] 8.4 Clear Jest cache — server + UI
-- [ ] 8.5 Verbose mode toggle — server + UI
-- [ ] 8.6 Force exit toggle — server + UI
-- [ ] 8.7 Show Jest config — server + UI
-- [ ] 8.8 Detect open handles — server + UI
-- [ ] 8.9 New keyboard shortcuts
-- [ ] Update `README.md` with new features and shortcuts
-- [ ] Test: each new command works end-to-end
-- [ ] Commit: `feat: add new Jest commands - bail, verbose, clearCache, runFailed, runByName, showConfig, forceExit, detectOpenHandles`
+---
+
+## 11. Phase 9 — UI Modernization with Futuristic Bot & Animations
+
+### Goal
+Transform Majestic Pro into a visually stunning test runner with an animated bot mascot, futuristic background animations, modern component library, and dark/light theme support.
+
+### Component Libraries & Tools
+
+**Animation & Motion:**
+- `framer-motion@^11.0.0` — React animation library for smooth transitions and bot animations
+- `@react-spring/web@^10.1.2` — Physics-based animations (already installed)
+- `react-tsparticles@^2.12.0` — Particle system for background effects
+
+**UI Components (Production-Grade, Free):**
+- **Spectre UI** (https://spectreui.dev/) — Modern, lightweight CSS framework
+  - Minimal, clean components perfect for test runner
+  - No JavaScript dependencies, works with styled-components
+  - Features: Cards, buttons, modals, forms, grids
+- **Radix UI** (`@radix-ui/*`) — Unstyled, accessible primitives
+  - Dialog, dropdown-menu, accordion, popover components
+  - Full keyboard navigation and ARIA support
+- **Headless UI** (`@headlessui/react`) — Unstyled accessible components
+
+**Icons & Utilities:**
+- `react-icons@^5.0.0` — Multiple icon sets (Feather, Heroicons, etc.)
+- `clsx@^2.0.0` — Conditional CSS class management
+- `lottie-react@^2.4.0` — Adobe After Effects animations
+
+### Step 9.1 — Install Modernization Dependencies
+
+**File:** `package.json`
+
+Add to devDependencies:
+```json
+{
+  "framer-motion": "^11.0.0",
+  "@radix-ui/react-dialog": "^1.1.1",
+  "@radix-ui/react-dropdown-menu": "^2.0.6",
+  "@radix-ui/react-accordion": "^1.0.4",
+  "react-tsparticles": "^2.12.0",
+  "tsparticles": "^2.12.0",
+  "react-icons": "^5.0.0",
+  "clsx": "^2.0.0",
+  "lottie-react": "^2.4.0"
+}
+```
+
+Run: `pnpm install`
+
+### Step 9.2 — Create Design Token System
+
+**File:** `ui/design-system/tokens.ts`
+
+Define color palette, spacing, shadows, transitions:
+
+```typescript
+export const darkTheme = {
+  colors: {
+    primary: 'hsl(280, 100%, 50%)',      // Vibrant Purple
+    secondary: 'hsl(200, 100%, 50%)',    // Bright Cyan
+    accent: 'hsl(330, 100%, 50%)',       // Neon Pink
+    success: 'hsl(150, 100%, 45%)',      // Neon Green
+    warning: 'hsl(40, 100%, 50%)',       // Neon Yellow
+    error: 'hsl(0, 100%, 50%)',          // Neon Red
+    background: 'hsl(280, 20%, 8%)',     // Deep Purple Black
+    surface: 'hsl(280, 15%, 15%)',       // Purple Black Surface
+    border: 'hsl(280, 10%, 25%)',        // Purple Gray Border
+    text: {
+      primary: 'hsl(0, 0%, 95%)',        // Near White
+      secondary: 'hsl(0, 0%, 70%)',      // Gray
+    }
+  },
+  shadows: {
+    sm: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    md: '0 8px 32px rgba(0, 0, 0, 0.2)',
+    lg: '0 12px 48px rgba(0, 0, 0, 0.3)',
+    glow: '0 0 20px rgba(200, 50, 255, 0.5)',
+    neon: '0 0 10px rgba(0, 255, 200, 0.8)',
+  },
+  spacing: {
+    xs: '4px',
+    sm: '8px',
+    md: '16px',
+    lg: '24px',
+    xl: '32px',
+  },
+  radius: {
+    sm: '4px',
+    md: '8px',
+    lg: '12px',
+    xl: '16px',
+    full: '9999px',
+  },
+  transitions: {
+    fast: '150ms ease-in-out',
+    base: '250ms ease-in-out',
+    slow: '350ms ease-in-out',
+  }
+};
+
+export const lightTheme = {
+  // Similar structure with light mode colors
+  colors: {
+    primary: 'hsl(280, 90%, 55%)',
+    secondary: 'hsl(200, 90%, 55%)',
+    // ... rest of light theme
+  }
+  // ... rest identical to dark theme
+};
+```
+
+### Step 9.3 — Create Theme Context Provider
+
+**File:** `ui/context/ThemeContext.tsx`
+
+```typescript
+import React, { createContext, useState, useEffect } from 'react';
+import { darkTheme, lightTheme } from '../design-system/tokens';
+
+export const ThemeContext = createContext({
+  isDark: true,
+  toggleTheme: () => {},
+  colors: darkTheme.colors,
+});
+
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isDark, setIsDark] = useState(
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const theme = isDark ? darkTheme : lightTheme;
+    
+    Object.entries(theme.colors).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        root.style.setProperty(`--color-${key}`, value);
+      } else {
+        Object.entries(value).forEach(([subKey, subValue]) => {
+          root.style.setProperty(`--color-${key}-${subKey}`, subValue);
+        });
+      }
+    });
+  }, [isDark]);
+
+  return (
+    <ThemeContext.Provider value={{ isDark, toggleTheme: () => setIsDark(!isDark), colors: isDark ? darkTheme.colors : lightTheme.colors }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+export const useTheme = () => React.useContext(ThemeContext);
+```
+
+### Step 9.4 — Create Animated Bot Mascot Component
+
+**File:** `ui/components/BotMascot.tsx`
+
+Create a bot component with Framer Motion animations for different states:
+- Idle (floating, subtle breathing)
+- Running (spinning, processing)
+- Success (celebration, sparkles)
+- Failed (sad, shaking)
+
+```typescript
+import React from 'react';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
+
+type BotState = 'idle' | 'running' | 'success' | 'failed';
+
+interface BotMascotProps {
+  state: BotState;
+}
+
+const BotContainer = styled.div`
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const BotMascot: React.FC<BotMascotProps> = ({ state }) => {
+  const variants = {
+    idle: {
+      y: [0, -10, 0],
+      rotate: [0, 2, -2, 0],
+    },
+    running: {
+      rotate: 360,
+    },
+    success: {
+      scale: [1, 1.2, 1],
+      rotate: 360,
+    },
+    failed: {
+      x: [-5, 5, -5, 0],
+      rotate: [0, 3, -3, 0],
+    },
+  };
+
+  return (
+    <BotContainer>
+      <motion.div
+        animate={variants[state]}
+        transition={{
+          duration: state === 'running' ? 2 : state === 'success' ? 0.5 : 4,
+          repeat: state === 'idle' || state === 'running' ? Infinity : 0,
+          ease: 'easeInOut',
+        }}
+        style={{ fontSize: '80px' }}
+      >
+        🤖
+      </motion.div>
+    </BotContainer>
+  );
+};
+```
+
+### Step 9.5 — Create Background Animation Component
+
+**File:** `ui/components/BackgroundAnimation.tsx`
+
+Using tsparticles for particle effects:
+
+```typescript
+import React from 'react';
+import Particles from 'react-tsparticles';
+import type { Engine } from 'tsparticles-engine';
+import { loadSlim } from 'tsparticles-slim';
+
+export const BackgroundAnimation: React.FC = () => {
+  const particlesInit = async (engine: Engine) => {
+    await loadSlim(engine);
+  };
+
+  return (
+    <Particles
+      init={particlesInit}
+      options={{
+        particles: {
+          number: { value: 50 },
+          color: { value: '#00ffcc' },
+          shape: { type: 'circle' },
+          opacity: { value: 0.3 },
+          size: { value: 3 },
+          move: {
+            enable: true,
+            speed: 1,
+            direction: 'none',
+            random: true,
+            straight: false,
+            outMode: 'bounce',
+          },
+        },
+      }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+      }}
+    />
+  );
+};
+```
+
+### Step 9.6 — Create Test Status Indicator
+
+**File:** `ui/components/TestStatusOverlay.tsx`
+
+Component showing bot, progress bar, test count during test runs:
+
+```typescript
+import React from 'react';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { BotMascot } from './BotMascot';
+
+interface TestStatusOverlayProps {
+  isRunning: boolean;
+  passedCount: number;
+  failedCount: number;
+  totalCount: number;
+}
+
+const Container = styled(motion.div)`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(30, 30, 50, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 50, 255, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(200, 50, 255, 0.3);
+  z-index: 1000;
+`;
+
+export const TestStatusOverlay: React.FC<TestStatusOverlayProps> = ({
+  isRunning,
+  passedCount,
+  failedCount,
+  totalCount,
+}) => {
+  const progress = ((passedCount + failedCount) / totalCount) * 100;
+  const state = !isRunning ? 'idle' : failedCount > 0 ? 'failed' : 'success';
+
+  return (
+    <Container
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+    >
+      <BotMascot state={isRunning ? 'running' : state} />
+      <div style={{ textAlign: 'center', color: 'white' }}>
+        <div>{passedCount + failedCount} / {totalCount} tests</div>
+        <ProgressBar>
+          <Progress style={{ width: `${progress}%` }} />
+        </ProgressBar>
+      </div>
+    </Container>
+  );
+};
+
+const ProgressBar = styled.div`
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+`;
+
+const Progress = styled(motion.div)`
+  height: 100%;
+  background: linear-gradient(90deg, hsl(150, 100%, 45%), hsl(280, 100%, 50%));
+  box-shadow: 0 0 10px hsl(150, 100%, 45%);
+`;
+```
+
+### Step 9.7 — Integrate Bot & Animations into Main UI
+
+**File:** `ui/app.tsx`
+
+Add BotMascot and BackgroundAnimation:
+
+```typescript
+import { BotMascot } from './components/BotMascot';
+import { BackgroundAnimation } from './components/BackgroundAnimation';
+import { TestStatusOverlay } from './components/TestStatusOverlay';
+
+export const App: React.FC = () => {
+  // ... existing code ...
+
+  return (
+    <AppContainer>
+      <BackgroundAnimation />
+      {runnerStatus.isRunning && (
+        <TestStatusOverlay
+          isRunning={runnerStatus.isRunning}
+          passedCount={summary?.numPassedTests || 0}
+          failedCount={summary?.numFailedTests || 0}
+          totalCount={summary?.numTotalTests || 0}
+        />
+      )}
+      {/* Rest of UI */}
+    </AppContainer>
+  );
+};
+```
+
+### Step 9.8 — Create Theme Toggle Button
+
+**File:** `ui/components/ThemeToggle.tsx`
+
+```typescript
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Moon, Sun } from 'react-feather';
+import { useTheme } from '../context/ThemeContext';
+import styled from 'styled-components';
+
+const ToggleButton = styled(motion.button)`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+  transition: all 250ms ease-in-out;
+
+  &:hover {
+    color: var(--color-primary);
+    text-shadow: 0 0 10px var(--color-primary);
+  }
+`;
+
+export const ThemeToggle: React.FC = () => {
+  const { isDark, toggleTheme } = useTheme();
+
+  return (
+    <ToggleButton
+      onClick={toggleTheme}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      {isDark ? <Sun size={20} /> : <Moon size={20} />}
+    </ToggleButton>
+  );
+};
+```
+
+### Step 9.9 — Apply Glassmorphism & Glow Effects
+
+Update styled-components across UI to use glassmorphism:
+
+```typescript
+const GlassCard = styled.div`
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  padding: 20px;
+`;
+
+const NeonButton = styled.button`
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(200, 50, 255, 0.5);
+  transition: all 250ms ease-in-out;
+
+  &:hover {
+    box-shadow: 0 0 30px rgba(200, 50, 255, 0.8);
+    transform: scale(1.05);
+  }
+`;
+```
+
+### Step 9.10 — Performance Optimization
+
+**Key strategies:**
+1. Use `will-change: transform` for animated elements
+2. Lazy load particle animations
+3. Respect `prefers-reduced-motion` for accessibility
+4. Memoize heavy components with `React.memo`
+5. Use Framer Motion's `layoutId` for shared layout animations
+
+### Step 9.11 — Testing & Validation
+
+- [ ] Theme toggle works instantly (no flicker)
+- [ ] Bot animations smooth at 60 FPS
+- [ ] Background particles optimized (no CPU spike)
+- [ ] WCAG 2.1 AA accessibility compliance
+- [ ] Mobile responsive (scales appropriately)
+- [ ] Prefers-reduced-motion respected
+
+### Step 9.12 — Commit & Version
+
+```bash
+git add .
+git commit -m "feat: add futuristic UI with bot mascot, animations, glassmorphism, and dark/light theme support"
+npm version minor  # v2.1.0
+git push origin --follow-tags
+```
+
+### Phase 9 — UI Modernization 🚀 **IN PROGRESS**
+- [ ] 9.1 Install modernization dependencies (Framer Motion, Radix UI, react-tsparticles, etc.)
+- [ ] 9.2 Create design token system with dark/light theme colors
+- [ ] 9.3 Create theme context provider with automatic detection
+- [ ] 9.4 Design and create animated bot mascot (idle, running, success, failed states)
+- [ ] 9.5 Create background animation component (particle system)
+- [ ] 9.6 Create test status indicator overlay component
+- [ ] 9.7 Integrate bot & animations into main app UI
+- [ ] 9.8 Create theme toggle button with Framer Motion
+- [ ] 9.9 Apply glassmorphism and glow effects to all UI components
+- [ ] 9.10 Optimize animations for performance (GPU acceleration, prefers-reduced-motion)
+- [ ] 9.11 Test theme switching, animations on mobile, accessibility
+- [ ] 9.12 Build verification and final commit
+- [ ] Test: full build `pnpm prod` with zero TypeScript errors
+- [ ] Commit: `feat: add futuristic UI with bot mascot, animations, glassmorphism, and dark/light theme support`
 
 ### Final
 - [ ] Run `pnpm prod` — full production build succeeds
 - [ ] Run `pnpm server` — server starts cleanly
 - [ ] Test against a real Jest project end-to-end
-- [ ] Update `version` in `package.json` to `2.0.0`
+- [ ] Update `version` in `package.json` to `2.1.0`
 - [ ] Open PR against main branch
 
 ---
