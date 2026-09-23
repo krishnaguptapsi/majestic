@@ -1616,6 +1616,23 @@ Execute phases in this exact order to minimize breakage. Each phase should be co
 - [x] 7.5 Fixed `ui/test-file/index.tsx` — useMutation tuples
 - [x] 7.6 Fixed `styled-components` generic types across UI
 - [x] 7.7 Fixed `workspace/resolver.ts` — SummaryEvent naming conflict
+
+### Phase 8 — New Jest Commands 🚀 **IN PROGRESS**
+- [x] 8.1 Run Test by Name — server-side implementation already exists in jest-manager/index.ts
+- [x] 8.2 Run Failed Tests — server-side implementation already exists
+- [x] 8.3 Bail Mode Toggle — server-side implementation already exists
+- [x] 8.4 Clear Cache — server-side implementation already exists
+- [x] 8.5 Verbose Mode Toggle — server-side implementation already exists
+- [x] 8.6 Force Exit Toggle — server-side implementation already exists
+- [x] 8.7 Show Jest Config — server-side implementation already exists
+- [x] 8.8 Detect Open Handles — server-side implementation already exists
+- [x] 8.9 GraphQL Files Created — all 11 .gql files created in ui/sidebar/
+- [x] 8.10 UI Components Added — buttons/toggles added to sidebar with handler functions
+- [x] 8.11 Keyboard Shortcuts Implemented — Alt+f, Alt+c, Alt+v added to sidebar keyboard handler
+- [x] 8.12 README Updated — new features and shortcuts documented
+- [ ] 8.13 Build Verification — verify webpack build completes without errors
+- [ ] 8.14 End-to-End Testing — test all new commands in running UI
+- [ ] 8.15 Final Commit — commit all Phase 8 changes
 - [x] 7.8 Fixed `server/index.ts` — removed chrome-launcher
 - [x] 7.9 Fixed `type-graphql` v2 decorator changes
 - [x] Test: full build `pnpm prod` with zero TypeScript errors

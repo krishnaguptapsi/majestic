@@ -50,7 +50,7 @@ module.exports = env => ({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Majestic',
+      title: 'Majestic-Pro',
       template: path.resolve(__dirname, '../ui/index.html'),
       favicon: './ui/assets/favicon.ico',
     }),
