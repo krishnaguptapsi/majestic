@@ -113,7 +113,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "bin": {
-    "majestic": "./dist/server/index.js"
+    "majestic-pro": "./dist/server/index.js"
   },
   "files": [
     "/dist/**",

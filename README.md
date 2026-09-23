@@ -45,23 +45,23 @@ Run majestic via `npx` in a project directory
 
 ```bash
 cd ./my-jest-project # go into a project with Jest
-npx majestic # execute majestic
+npx majestic-pro # execute majestic-pro
 ```
 
-or install Majestic globally via pnpm and run majestic
+or install Majestic globally via pnpm and run majestic-pro
 
 ```bash
-pnpm add -g majestic # install majestic globally
+pnpm add -g majestic-pro # install majestic-pro globally
 cd ./my-jest-project # go into a project with Jest
-majestic # execute majestic
+majestic-pro # execute majestic-pro
 ```
 
-or install Majestic globally via Npm and run majestic
+or install Majestic globally via Npm and run majestic-pro
 
 ```bash
-npm install majestic -g # install majestic globally
+npm install majestic-pro -g # install majestic-pro globally
 cd ./my-jest-project # go into a project with Jest
-majestic # execute majestic
+majestic-pro # execute majestic-pro
 ```
 
 ### Running as an app
