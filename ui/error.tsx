@@ -51,14 +51,22 @@ const Message = styled.div`
   font-size: 15px;
 `;
 
-export class ErrorBoundary extends Component {
+export class ErrorBoundary extends Component<any, any> {
   state = {
-    didError: false
+    didError: false,
+    error: null,
+    errorInfo: null
   };
 
-  componentDidCatch() {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("❌ ErrorBoundary caught an error:", error);
+    console.error("❌ Error Info:", errorInfo);
+    console.error("❌ Component Stack:", errorInfo.componentStack);
+    
     this.setState({
-      didError: true
+      didError: true,
+      error,
+      errorInfo
     });
   }
 
@@ -90,6 +98,13 @@ export class ErrorBoundary extends Component {
           Oops, Something went wrong. Check the terminal for exact error
           message!
         </Message>
+        {this.state.error && (
+          <Message style={{ fontSize: "12px", marginTop: "20px", color: "#ff6b6b", maxWidth: "600px", textAlign: "left", whiteSpace: "pre-wrap" }}>
+            <strong>Error:</strong> {this.state.error.toString()}
+            <br />
+            <strong>Stack:</strong> {this.state.error.stack}
+          </Message>
+        )}
       </Container>
     );
   }

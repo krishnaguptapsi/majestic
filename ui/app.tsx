@@ -20,8 +20,8 @@ import { color } from "styled-system";
 import { RunnerStatus } from "../server/api/runner/status";
 import { Summary } from "../server/api/workspace/summary";
 import CoveragePanel from "./coverage-panel";
-import { BackgroundFuturistic } from "./components/BackgroundAnimation";
-import { TestStatusOverlay } from "./components/TestStatusOverlay";
+// import { BackgroundFuturistic } from "./components/BackgroundAnimation";
+// import { TestStatusOverlay } from "./components/TestStatusOverlay";
 
 const ContainerDiv = styled.div`
   display: flex;
@@ -54,17 +54,30 @@ interface WorkspaceResult {
 }
 
 export default function App() {
+  console.log("🔄 App component rendering");
+  
   const {
-    data: {
-      app: { selectedFile },
-    },
+    data: appData,
     refetch,
   } = useQuery<AppResult>(APP);
 
+  console.log("✅ APP query loaded, data:", appData);
+
   const {
-    data: { workspace },
+    data: workspaceData,
     refetch: refetchFiles,
   } = useQuery<WorkspaceResult>(WORKSPACE);
+
+  console.log("✅ WORKSPACE query loaded, data:", workspaceData);
+
+  // Safely extract values with fallbacks
+  const selectedFile = appData?.app?.selectedFile || null;
+  const workspace = workspaceData?.workspace || {
+    projectRoot: '',
+    files: [],
+    summary: null,
+    coverage: null,
+  };
 
   const { data: summary }: { data: Summary } = useSubscription(
     SUMMARY_QUERY,
@@ -74,6 +87,8 @@ export default function App() {
     (result: any) => result.changeToSummary,
     "Summary Sub"
   );
+
+  console.log("✅ Summary subscription loaded");
 
   const { data: runnerStatus }: { data: RunnerStatus } = useSubscription(
     RUNNER_STATUS_QUERY,
@@ -113,10 +128,19 @@ export default function App() {
     return { isRunning, passedCount, failedCount, totalCount };
   }, [runnerStatus, summary]);
 
+  // Return early if workspace is still loading
+  if (!workspace || !workspace.projectRoot) {
+    return (
+      <ContainerDiv>
+        <PlaceHolder bg="dark">Loading...</PlaceHolder>
+      </ContainerDiv>
+    );
+  }
+
   return (
     <ContainerDiv>
-      {/* Background Animation */}
-      <BackgroundFuturistic />
+      {/* Background Animation - Temporarily disabled for testing */}
+      {/* <BackgroundFuturistic /> */}
 
       <PanelGroup direction="horizontal">
         <Panel defaultSize={25} minSize={18}>
@@ -155,8 +179,8 @@ export default function App() {
         </Panel>
       </PanelGroup>
 
-      {/* Test Status Overlay */}
-      <TestStatusOverlay
+      {/* Test Status Overlay - Temporarily disabled for testing */}
+      {/* <TestStatusOverlay
         isRunning={testStatus.isRunning}
         passedCount={testStatus.passedCount}
         failedCount={testStatus.failedCount}
@@ -164,7 +188,7 @@ export default function App() {
         position="bottom-right"
         showBot
         compact={false}
-      />
+      /> */}
 
       <Search
         projectRoot={workspace.projectRoot}

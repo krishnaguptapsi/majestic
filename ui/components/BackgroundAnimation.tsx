@@ -407,15 +407,22 @@ export const BackgroundAnimation: React.FC<BackgroundAnimationProps> = ({
 
   // Particles initialization callback
   const particlesInit = useCallback(async (engine: Engine) => {
-    await loadFull(engine);
+    try {
+      await loadFull(engine);
+    } catch (error) {
+      console.error('[BackgroundAnimation] Failed to initialize particles:', error);
+    }
   }, []);
 
   // Get particle configuration based on style and theme
   const particleConfig = useMemo(() => {
-    const config = getParticleConfig(style, isDark);
+    const baseConfig = getParticleConfig(style, isDark);
+    
+    // Create a deep clone to avoid mutations
+    const config = JSON.parse(JSON.stringify(baseConfig));
 
     // Adjust density based on intensity
-    if (config.particles.number.density) {
+    if (config.particles?.number?.density) {
       switch (intensity) {
         case 'low':
           config.particles.number.density.value_area = (config.particles.number.density.value_area || 800) * 1.5;
@@ -429,10 +436,14 @@ export const BackgroundAnimation: React.FC<BackgroundAnimationProps> = ({
       }
     }
 
-    // Add interactivity config
-    if (interactive && config.interactivity) {
+    // Configure interactivity
+    if (!config.interactivity) {
+      config.interactivity = {};
+    }
+
+    if (interactive) {
       config.interactivity.detectsOn = 'canvas';
-    } else if (config.interactivity) {
+    } else {
       config.interactivity.events = {
         onHover: { enable: false },
         onClick: { enable: false },

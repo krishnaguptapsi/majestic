@@ -45,7 +45,12 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default class Container extends Component {
+  componentDidMount() {
+    console.log("✅ Container mounted");
+  }
+
   render() {
+    console.log("🔄 Container rendering");
     return (
       <React.Fragment>
         <MajesticThemeProvider defaultTheme="dark">

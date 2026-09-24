@@ -171,9 +171,11 @@ export default function TestExplorer({
   }
 
   const {
-    data: { shouldCollectCoverage },
+    data: coverageData,
     refetch: refetchCoverageFlag
   } = useQuery<any>(SHOULD_COLLECT_COVERAGE);
+  
+  const shouldCollectCoverage = coverageData?.shouldCollectCoverage || false;
   const [setCollectCoverage] = useMutation(SET_COLLECT_COVERAGE);
 
   const handleFileSelection = (path: string) => {
