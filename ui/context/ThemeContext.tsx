@@ -80,22 +80,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, defaultT
   useEffect(() => {
     if (!isHydrated) return;
 
-    const currentTheme = themeName === 'dark' ? darkTheme : lightTheme;
-
-    // Apply CSS variables to document root
-    applyThemeCSSVariables(currentTheme);
-
     // Update data attribute for CSS selectors
     document.documentElement.setAttribute('data-theme', themeName);
 
-    // Add/remove dark class for CSS frameworks compatibility
-    if (themeName === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.style.colorScheme = 'dark';
+    // Add/remove light class for CSS theme switching
+    if (themeName === 'light') {
+      document.documentElement.classList.add('light');
     } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.colorScheme = 'light';
+      document.documentElement.classList.remove('light');
     }
+
+    // Update color-scheme for browser defaults
+    document.documentElement.style.colorScheme = themeName === 'dark' ? 'dark' : 'light';
 
     // Save preference to localStorage
     localStorage.setItem(THEME_STORAGE_KEY, themeName);

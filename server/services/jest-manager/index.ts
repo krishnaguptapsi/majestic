@@ -3,7 +3,7 @@ import { join } from "path";
 import Project from "../project";
 import { pubsub } from "../../event-emitter";
 import { MajesticConfig } from "../types";
-import { createLogger } from "../../logger";
+import { createLogger, logOperation, logSuccess } from "../../logger";
 
 const log = createLogger("Jest Manager");
 
@@ -32,6 +32,7 @@ export default class JestManager {
   }
 
   run(watch: boolean, collectCoverage: boolean) {
+    logOperation("🎯 Running all tests", { watch, collectCoverage });
     this.executeJest(
       [
         "--reporters",
@@ -45,6 +46,7 @@ export default class JestManager {
   }
 
   runSingleFile(path: string, watch: boolean, collectCoverage: boolean) {
+    logOperation("📄 Running single test file", { path, watch, collectCoverage });
     this.executeJest(
       [
         this.getPatternForPath(path),
@@ -200,7 +202,11 @@ export default class JestManager {
       REPORT_SUMMARY: shouldReportSummary ? "report" : "",
     };
 
-    log("Executing Jest with :", finalArgs, finalEnv);
+    logOperation("⚙️  Jest process spawning", {
+      projectRoot: this.project.projectRoot,
+      args: finalArgs,
+      environment: Object.keys(finalEnv),
+    });
 
     this.process = spawn("node", finalArgs, {
       cwd: this.project.projectRoot,
@@ -209,8 +215,15 @@ export default class JestManager {
       env: { ...(process.env || {}), ...finalEnv },
     });
 
-    this.process.on("exit", () => {
+    logSuccess("Jest process spawned", { pid: this.process.pid });
+
+    this.process.on("exit", (code) => {
+      logOperation("Jest process exited", { exitCode: code, pid: this.process.pid });
       this.reportStop();
+    });
+
+    this.process.on("error", (err) => {
+      logOperation("Jest process error", { error: err.message, pid: this.process.pid });
     });
 
     this.process.stdout?.on("data", (data: Buffer) => {
@@ -235,25 +248,29 @@ export default class JestManager {
     return `^${path.replace(replacePattern, ".")}$`;
   }
 
-  reportStart() {
-    pubsub.publish(RunnerEvents.RUNNER_STARTED, {
-      id: RunnerEvents.RUNNER_STARTED,
-      payload: { isRunning: true },
-    });
-  }
-
   stop() {
+    logOperation("🛑 Stopping Jest runner", { pid: this.process?.pid });
     if (this.process) {
       if (process.platform === "win32") {
         spawn("taskkill", ["/pid", "" + this.process.pid, "/T", "/F"]);
       } else {
         this.process.kill();
       }
+      logSuccess("Jest process killed", { pid: this.process.pid });
       this.reportStop();
     }
   }
 
+  reportStart() {
+    logOperation("📊 Reporter: Starting test run");
+    pubsub.publish(RunnerEvents.RUNNER_STARTED, {
+      id: RunnerEvents.RUNNER_STARTED,
+      payload: { isRunning: true },
+    });
+  }
+
   reportStop() {
+    logOperation("📊 Reporter: Stopping test run");
     pubsub.publish(RunnerEvents.RUNNER_STOPPED, {
       id: RunnerEvents.RUNNER_STOPPED,
       payload: { isRunning: false },

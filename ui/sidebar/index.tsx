@@ -65,6 +65,9 @@ const ActionsPanel = styled.div<any>`
 
 const RightActionPanel = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 100%;
 `;
 
 const FileHeader = styled.div<any>`
@@ -174,7 +177,7 @@ export default function TestExplorer({
     data: coverageData,
     refetch: refetchCoverageFlag
   } = useQuery<any>(SHOULD_COLLECT_COVERAGE);
-  
+
   const shouldCollectCoverage = coverageData?.shouldCollectCoverage || false;
   const [setCollectCoverage] = useMutation(SET_COLLECT_COVERAGE);
 

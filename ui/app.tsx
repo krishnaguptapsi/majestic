@@ -20,8 +20,8 @@ import { color } from "styled-system";
 import { RunnerStatus } from "../server/api/runner/status";
 import { Summary } from "../server/api/workspace/summary";
 import CoveragePanel from "./coverage-panel";
-// import { BackgroundFuturistic } from "./components/BackgroundAnimation";
-// import { TestStatusOverlay } from "./components/TestStatusOverlay";
+import { BackgroundFuturistic } from "./components/BackgroundAnimation";
+import { TestStatusOverlay } from "./components/TestStatusOverlay";
 
 const ContainerDiv = styled.div`
   display: flex;
@@ -55,7 +55,7 @@ interface WorkspaceResult {
 
 export default function App() {
   console.log("🔄 App component rendering");
-  
+
   const {
     data: appData,
     refetch,
@@ -139,8 +139,8 @@ export default function App() {
 
   return (
     <ContainerDiv>
-      {/* Background Animation - Temporarily disabled for testing */}
-      {/* <BackgroundFuturistic /> */}
+      {/* Background Animation with particle effects */}
+      <BackgroundFuturistic />
 
       <PanelGroup direction="horizontal">
         <Panel defaultSize={25} minSize={18}>
@@ -179,8 +179,8 @@ export default function App() {
         </Panel>
       </PanelGroup>
 
-      {/* Test Status Overlay - Temporarily disabled for testing */}
-      {/* <TestStatusOverlay
+      {/* Test Status Overlay with bot mascot */}
+      <TestStatusOverlay
         isRunning={testStatus.isRunning}
         passedCount={testStatus.passedCount}
         failedCount={testStatus.failedCount}
@@ -188,7 +188,7 @@ export default function App() {
         position="bottom-right"
         showBot
         compact={false}
-      /> */}
+      />
 
       <Search
         projectRoot={workspace.projectRoot}
